@@ -1,0 +1,88 @@
+<div class="dashboard-container">
+  <h1>📊 Dashboard</h1>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="spinner">
+    Carregando dados...
+  </div>
+
+  <div *ngIf="!loading && !error" class="dashboard-content">
+    <!-- Estatísticas de Notas -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Total de Notas</div>
+        <div class="stat-value">{{ totalNotas }}</div>
+        <div class="stat-detail">Todas as notas fiscais</div>
+      </div>
+
+      <div class="stat-card stat-open">
+        <div class="stat-title">Notas Abertas</div>
+        <div class="stat-value">{{ notasAbertas }}</div>
+        <div class="stat-detail">Prontas para impressão</div>
+      </div>
+
+      <div class="stat-card stat-closed">
+        <div class="stat-title">Notas Fechadas</div>
+        <div class="stat-value">{{ notasFechadas }}</div>
+        <div class="stat-detail">Já impressas</div>
+      </div>
+
+      <div class="stat-card stat-movement">
+        <div class="stat-title">Movimentação</div>
+        <div class="stat-value">{{ totalMovimentacao }}</div>
+        <div class="stat-detail">Unidades utilizadas</div>
+      </div>
+    </div>
+
+    <!-- Estatísticas de Produtos -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Total de Produtos</div>
+        <div class="stat-value">{{ totalProdutos }}</div>
+        <div class="stat-detail">Itens cadastrados</div>
+      </div>
+
+      <div class="stat-card stat-warning" *ngIf="produtosComBaixoSaldo > 0">
+        <div class="stat-title">⚠️ Baixo Saldo</div>
+        <div class="stat-value">{{ produtosComBaixoSaldo }}</div>
+        <div class="stat-detail">Produtos com menos de 5 un.</div>
+      </div>
+
+      <div class="stat-card stat-success" *ngIf="produtosComBaixoSaldo === 0">
+        <div class="stat-title">✅ Estoque OK</div>
+        <div class="stat-value">{{ totalProdutos }}</div>
+        <div class="stat-detail">Todos com saldo adequado</div>
+      </div>
+    </div>
+
+    <!-- Produtos com Baixo Saldo -->
+    <div class="section" *ngIf="obterProdutosComBaixoSaldo().length > 0">
+      <h2>⚠️ Produtos com Baixo Saldo</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Descrição</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let produto of obterProdutosComBaixoSaldo()" class="low-stock">
+            <td>{{ produto.codigo }}</td>
+            <td>{{ produto.descricao }}</td>
+            <td class="saldo-baixo">{{ produto.saldo }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Resumo da Tabela -->
+    <div class="summary">
+      <p><strong>Taxa de Fechamento:</strong> {{ totalNotas > 0 ? ((notasFechadas / totalNotas) * 100).toFixed(1) : 0 }}% das notas já foram impressas</p>
+      <p><strong>Cobertura de Estoque:</strong> {{ totalProdutos > 0 ? (((totalProdutos - produtosComBaixoSaldo) / totalProdutos) * 100).toFixed(1) : 0 }}% dos produtos estão com saldo adequado</p>
+    </div>
+  </div>
+</div>

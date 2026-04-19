@@ -1,0 +1,124 @@
+<div class="container">
+  <h1>Gestão de Produtos</h1>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="loading" class="spinner">
+    Carregando...
+  </div>
+
+  <button (click)="abrirFormulario()" class="btn btn-primary" *ngIf="!showForm">
+    + Novo Produto
+  </button>
+
+  <button (click)="exportarProdutos()" class="btn btn-secondary" *ngIf="!showForm && produtos.length > 0">
+    📥 Exportar CSV
+  </button>
+
+  <div *ngIf="showForm" class="form-container">
+    <h2>{{ editingId ? 'Editar' : 'Novo' }} Produto</h2>
+    <div class="form-group">
+      <label>Código:</label>
+      <input type="number" [(ngModel)]="form.codigo" class="form-input" />
+    </div>
+    <div class="form-group">
+      <label>Descrição:</label>
+      <input type="text" [(ngModel)]="form.descricao" class="form-input" />
+    </div>
+    <div class="form-group">
+      <label>Saldo:</label>
+      <input type="number" [(ngModel)]="form.saldo" class="form-input" />
+    </div>
+    <div class="form-buttons">
+      <button (click)="salvarProduto()" class="btn btn-success">Salvar</button>
+      <button (click)="fecharFormulario()" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </div>
+
+  <div *ngIf="!showForm && !loading && produtos.length > 0" class="table-container">
+    <!-- Filtros de Busca -->
+    <div class="filters-container">
+      <div class="filter-group">
+        <label>🔍 Código:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="filtroCodigo" 
+          placeholder="Buscar por código"
+          class="filter-input">
+      </div>
+
+      <div class="filter-group">
+        <label>Descrição:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="filtroDescricao" 
+          placeholder="Buscar por descrição"
+          class="filter-input">
+      </div>
+
+      <div class="filter-group">
+        <label>Saldo ≤:</label>
+        <input 
+          type="number" 
+          [(ngModel)]="filtroSaldo" 
+          placeholder="Saldo máximo"
+          class="filter-input">
+      </div>
+
+      <button (click)="limparFiltros()" class="btn btn-secondary" *ngIf="filtroCodigo || filtroDescricao || filtroSaldo">
+        ✖️ Limpar
+      </button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th (click)="mudarOrdenacao('codigo')" class="sortable" [class.sorted]="ordenarPor === 'codigo'">
+            Código <span *ngIf="ordenarPor === 'codigo'">{{ ordem === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th (click)="mudarOrdenacao('descricao')" class="sortable" [class.sorted]="ordenarPor === 'descricao'">
+            Descrição <span *ngIf="ordenarPor === 'descricao'">{{ ordem === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th (click)="mudarOrdenacao('saldo')" class="sortable" [class.sorted]="ordenarPor === 'saldo'">
+            Saldo <span *ngIf="ordenarPor === 'saldo'">{{ ordem === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let produto of produtosFiltrados" [class.low-stock]="produto.saldo < 5">
+          <td>{{ produto.id }}</td>
+          <td>{{ produto.codigo }}</td>
+          <td>{{ produto.descricao }}</td>
+          <td>{{ produto.saldo }}</td>
+          <td>
+            <button (click)="editarProduto(produto)" class="btn btn-small btn-info">Editar</button>
+            <button (click)="deletarProduto(produto.id)" class="btn btn-small btn-danger">Deletar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <div class="pagination">
+      <button (click)="irParaPagina(paginaAtual - 1)" class="btn btn-small btn-secondary" [disabled]="paginaAtual === 1">
+        ← Anterior
+      </button>
+      
+      <span class="pagination-info">
+        Página {{ paginaAtual }} de {{ totalPaginas }} | {{ registrosPorPagina }} registros por página
+      </span>
+      
+      <button (click)="irParaPagina(paginaAtual + 1)" class="btn btn-small btn-secondary" [disabled]="paginaAtual === totalPaginas">
+        Próxima →
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!showForm && !loading && produtos.length === 0" class="empty-message">
+    Nenhum produto cadastrado.
+  </div>
+</div>

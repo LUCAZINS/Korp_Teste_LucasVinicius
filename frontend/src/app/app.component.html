@@ -1,0 +1,21 @@
+<div class="app-container">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      📋 {{ title }}
+    </div>
+    <ul class="navbar-menu">
+      <li><a routerLink="/dashboard" routerLinkActive="active">📊 Dashboard</a></li>
+      <li><a routerLink="/notas-fiscais" routerLinkActive="active">Notas Fiscais</a></li>
+      <li><a routerLink="/produtos" routerLinkActive="active">Produtos</a></li>
+      <li><a routerLink="/auditoria" routerLinkActive="active">🔍 Auditoria</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2026 Sistema de Emissão de Notas Fiscais - Microsserviços</p>
+  </footer>
+</div>

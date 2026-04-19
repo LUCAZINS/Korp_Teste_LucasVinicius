@@ -1,0 +1,65 @@
+<div class="container">
+  <h1>🔍 Auditoria - Histórico de Operações</h1>
+
+  <div class="filters-container">
+    <div class="filter-group">
+      <label>Tipo de Operação:</label>
+      <select [(ngModel)]="filtroTipo" (change)="paginaAtual = 1" class="filter-input">
+        <option value="">Todas</option>
+        <option value="criar">➕ Criar</option>
+        <option value="atualizar">✏️ Atualizar</option>
+        <option value="deletar">🗑️ Deletar</option>
+        <option value="imprimir">🖨️ Imprimir</option>
+        <option value="outro">📝 Outro</option>
+      </select>
+    </div>
+
+    <button (click)="limparLogs()" class="btn btn-danger" *ngIf="logs.length > 0">
+      🗑️ Limpar Histórico
+    </button>
+  </div>
+
+  <div *ngIf="logsFiltrados.length > 0" class="logs-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Operação</th>
+          <th>Descrição</th>
+          <th>Data/Hora</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logsFiltrados" [class.log-row]="true">
+          <td>
+            <span class="badge" [style.backgroundColor]="obterCorTipo(log.tipo)">
+              {{ obterEmojiTipo(log.tipo) }} {{ log.tipo }}
+            </span>
+          </td>
+          <td class="operacao">{{ log.operacao }}</td>
+          <td class="descricao">{{ log.descricao }}</td>
+          <td class="timestamp">{{ log.timestamp | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <div class="pagination" *ngIf="totalPaginas > 1">
+      <button (click)="irParaPagina(paginaAtual - 1)" class="btn btn-small btn-secondary" [disabled]="paginaAtual === 1">
+        ← Anterior
+      </button>
+      
+      <span class="pagination-info">
+        Página {{ paginaAtual }} de {{ totalPaginas }}
+      </span>
+      
+      <button (click)="irParaPagina(paginaAtual + 1)" class="btn btn-small btn-secondary" [disabled]="paginaAtual === totalPaginas">
+        Próxima →
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="logsFiltrados.length === 0" class="empty-message">
+    Nenhum registro de auditoria encontrado.
+  </div>
+</div>

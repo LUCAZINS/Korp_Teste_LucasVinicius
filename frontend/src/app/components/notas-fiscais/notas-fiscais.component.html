@@ -1,0 +1,193 @@
+<div class="container">
+  <h1>Notas Fiscais</h1>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <div *ngIf="success" class="success-message">
+    {{ success }}
+  </div>
+
+  <div *ngIf="imprimindo" class="spinner">
+    🔄 Processando impressão... (com tentativas automáticas de reconexão)
+  </div>
+
+  <div *ngIf="loading && !showForm" class="spinner">
+    Carregando...
+  </div>
+
+  <button (click)="abrirFormulario()" class="btn btn-primary" *ngIf="!showForm && !loading">
+    + Nova Nota Fiscal
+  </button>
+
+  <div *ngIf="!showForm && !loading && notas.length > 0" class="filter-buttons">
+    <button 
+      (click)="alternarFiltro()" 
+      class="btn btn-secondary"
+      [class.active]="mostrarApenasAbertas">
+      {{ mostrarApenasAbertas ? '📋 Apenas Abertas' : '📊 Todas as Notas' }}
+    </button>
+    <button (click)="exportarNotas()" class="btn btn-secondary">
+      📥 Exportar CSV
+    </button>
+  </div>
+
+  <!-- Filtros de Busca -->
+  <div *ngIf="!showForm && !loading && notas.length > 0" class="filters-container">
+    <div class="filter-group">
+      <label>🔍 Número:</label>
+      <input 
+        type="text" 
+        [(ngModel)]="filtroNumero" 
+        placeholder="Buscar por número"
+        class="filter-input">
+    </div>
+
+    <div class="filter-group">
+      <label>Status:</label>
+      <select [(ngModel)]="filtroStatus" class="filter-input">
+        <option value="">Todos</option>
+        <option value="Aberta">Aberta</option>
+        <option value="Fechada">Fechada</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>📅 Data:</label>
+      <input 
+        type="date" 
+        [(ngModel)]="filtroData" 
+        class="filter-input">
+    </div>
+
+    <button (click)="limparFiltros()" class="btn btn-secondary" *ngIf="filtroNumero || filtroStatus || filtroData">
+      ✖️ Limpar Filtros
+    </button>
+  </div>
+
+  <div *ngIf="showForm" class="form-container">
+    <h2>Nova Nota Fiscal</h2>
+
+    <div class="form-group">
+      <label>Produto:</label>
+      <select [(ngModel)]="produtoSelecionado" class="form-input">
+        <option [ngValue]="null">Selecione um produto</option>
+        <option *ngFor="let p of produtos" [ngValue]="p">
+          {{ p.descricao }} (Saldo: {{ p.saldo }})
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Quantidade:</label>
+      <input type="number" [(ngModel)]="quantidadeSelecionada" class="form-input" min="1" />
+    </div>
+
+    <button (click)="adicionarItem()" class="btn btn-secondary">+ Adicionar Item</button>
+
+    <div *ngIf="itens.length > 0" class="itens-container">
+      <h3>Itens da Nota</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Quantidade</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of itens">
+            <td>{{ obterNomeProduto(item.produtoId) }}</td>
+            <td>{{ item.quantidade }}</td>
+            <td>
+              <button (click)="removerItem(item.produtoId)" class="btn btn-small btn-danger">
+                Remover
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="form-buttons">
+      <button (click)="criarNotaFiscal()" class="btn btn-success" [disabled]="itens.length === 0">
+        Criar Nota Fiscal
+      </button>
+      <button (click)="fecharFormulario()" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </div>
+
+  <div *ngIf="!showForm && !loading && notasAbertas.length > 0" class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th (click)="mudarOrdenacao('numero')" class="sortable" [class.sorted]="ordenarPor === 'numero'">
+            Número <span *ngIf="ordenarPor === 'numero'">{{ ordem === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th (click)="mudarOrdenacao('status')" class="sortable" [class.sorted]="ordenarPor === 'status'">
+            Status <span *ngIf="ordenarPor === 'status'">{{ ordem === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th (click)="mudarOrdenacao('data')" class="sortable" [class.sorted]="ordenarPor === 'data'">
+            Data Criação <span *ngIf="ordenarPor === 'data'">{{ ordem === 'asc' ? '▲' : '▼' }}</span>
+          </th>
+          <th>Itens</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let nota of notasAbertas">
+          <td>{{ nota.id }}</td>
+          <td>#{{ nota.numeroSequencial }}</td>
+          <td>
+            <span [class.status-aberta]="nota.status === 'Aberta'" 
+                  [class.status-fechada]="nota.status === 'Fechada'">
+              {{ nota.status }}
+            </span>
+          </td>
+          <td>{{ nota.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <div *ngFor="let item of nota.itens" [class.saldo-insuficiente]="!temSaldoSuficiente(item.produtoId, item.quantidade)">
+              {{ obterNomeProduto(item.produtoId) }} | Estoque: {{ obterSaldoProduto(item.produtoId) ?? 'N/A' }} | Solicitado: {{ item.quantidade }}
+            </div>
+          </td>
+          <td>
+            <button 
+              (click)="imprimirNotaFiscal(nota.id)" 
+              class="btn btn-small btn-success"
+              [disabled]="nota.status !== 'Aberta' || imprimindo || !notaPodeSerImpresa()"
+              [title]="!notaPodeSerImpresa() ? 'Saldo insuficiente para alguns produtos' : ''">
+              🖨️ Imprimir
+            </button>
+            <button 
+              (click)="deletarNota(nota.id)" 
+              class="btn btn-small btn-danger"
+              [disabled]="imprimindo">
+              🗑️ Deletar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <div class="pagination">
+      <button (click)="irParaPagina(paginaAtual - 1)" class="btn btn-small btn-secondary" [disabled]="paginaAtual === 1">
+        ← Anterior
+      </button>
+      
+      <span class="pagination-info">
+        Página {{ paginaAtual }} de {{ totalPaginas }} | {{ registrosPorPagina }} registros por página
+      </span>
+      
+      <button (click)="irParaPagina(paginaAtual + 1)" class="btn btn-small btn-secondary" [disabled]="paginaAtual === totalPaginas">
+        Próxima →
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!showForm && !loading && notasAbertas.length === 0" class="empty-message">
+    {{ mostrarApenasAbertas ? 'Nenhuma nota fiscal aberta para impressão.' : 'Nenhuma nota fiscal cadastrada.' }}
+  </div>
+</div>
