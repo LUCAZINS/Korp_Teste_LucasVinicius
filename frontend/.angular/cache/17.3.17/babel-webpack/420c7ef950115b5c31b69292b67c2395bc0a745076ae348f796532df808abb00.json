@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const environment = {\n  production: true,\n  estoqueApiUrl: 'https://microsservicos-estoque.onrender.com',\n  faturamentoApiUrl: 'https://microsservicos-faturamento.onrender.com'\n};","map":null,"metadata":{},"sourceType":"module","externalDependencies":[]}
