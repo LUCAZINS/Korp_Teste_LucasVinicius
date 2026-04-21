@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Estoque\\Servico.Estoque.csproj": {}
+    "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Estoque\\Servico.Estoque.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Estoque\\Servico.Estoque.csproj": {
+    "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Estoque\\Servico.Estoque.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Estoque\\Servico.Estoque.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Estoque\\Servico.Estoque.csproj",
         "projectName": "Servico.Estoque",
-        "projectPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Estoque\\Servico.Estoque.csproj",
+        "projectPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Estoque\\Servico.Estoque.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Estoque\\obj\\",
+        "outputPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Estoque\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"

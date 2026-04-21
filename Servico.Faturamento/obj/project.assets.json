@@ -2626,11 +2626,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Faturamento\\Servico.Faturamento.csproj",
+      "projectUniqueName": "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Faturamento\\Servico.Faturamento.csproj",
       "projectName": "Servico.Faturamento",
-      "projectPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Faturamento\\Servico.Faturamento.csproj",
+      "projectPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Faturamento\\Servico.Faturamento.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos\\Servico.Faturamento\\obj\\",
+      "outputPath": "C:\\Users\\User\\Desktop\\KORP\\microsservicos - Copia\\Servico.Faturamento\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"
