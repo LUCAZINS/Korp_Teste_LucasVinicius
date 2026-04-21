@@ -1,0 +1,52 @@
+services:
+  # Serviço de Estoque
+  - type: web
+    name: microsservicos-estoque
+    env: dotnet
+    plan: free  # ou standard, se quiser performance melhor
+    buildCommand: |
+      cd Servico.Estoque
+      dotnet publish -c Release -o /var/task
+    startCommand: "cd Servico.Estoque && dotnet Servico.Estoque.dll"
+    healthCheckPath: /swagger/index.html
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:8080
+      - key: ConnectionStrings__ConexaoPadrao
+        fromDatabase:
+          name: postgres-korp
+          property: connectionString
+      - key: EstoqueServiceUrl
+        value: https://microsservicos-estoque.onrender.com
+
+  # Serviço de Faturamento
+  - type: web
+    name: microsservicos-faturamento
+    env: dotnet
+    plan: free  # ou standard
+    buildCommand: |
+      cd Servico.Faturamento
+      dotnet publish -c Release -o /var/task
+    startCommand: "cd Servico.Faturamento && dotnet Servico.Faturamento.dll"
+    healthCheckPath: /swagger/index.html
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://+:8080
+      - key: ConnectionStrings__ConexaoPadrao
+        fromDatabase:
+          name: postgres-korp
+          property: connectionString
+      - key: EstoqueServiceUrl
+        value: https://microsservicos-estoque.onrender.com
+
+  # Banco de dados PostgreSQL
+  - type: pserv
+    name: postgres-korp
+    env: postgres
+    plan: free  # free tiver conexões limitadas, considere upgrade
+    ipAllowList: []
+    version: 15
