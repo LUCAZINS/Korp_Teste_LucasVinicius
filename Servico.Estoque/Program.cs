@@ -41,4 +41,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/", () => Results.Ok("Servico.Estoque online"));
+app.MapGet("/health", () => Results.Ok(new { status = "ok", service = "estoque" }));
+
 app.Run();

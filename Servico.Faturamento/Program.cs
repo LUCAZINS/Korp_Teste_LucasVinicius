@@ -43,4 +43,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/", () => Results.Ok("Servico.Faturamento online"));
+app.MapGet("/health", () => Results.Ok(new { status = "ok", service = "faturamento" }));
+
 app.Run();
